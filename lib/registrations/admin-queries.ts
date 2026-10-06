@@ -85,9 +85,6 @@ export async function listRegistrations(eventSlug: string): Promise<Registration
 
 export type RegistrationMetrics = {
   total: number;
-  organizations: number;
-  countries: number;
-  sectors: number;
   bySector: { label: string; count: number }[];
   byCountry: { label: string; count: number }[];
 };
@@ -106,17 +103,6 @@ export function computeMetrics(rows: RegistrationRow[]): RegistrationMetrics {
 
   const bySector = count((r) => r.sector, (r) => sectorLabels.get(r.sector) ?? r.sector);
   const byCountry = count((r) => r.country, (r) => r.countryName);
-  // Organizaciones distintas sin importar mayúsculas, espacios ni acentos.
-  const organizations = new Set(
-    rows.map((r) => r.organization.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim().toLowerCase())
-  );
 
-  return {
-    total: rows.length,
-    organizations: organizations.size,
-    countries: byCountry.length,
-    sectors: bySector.length,
-    bySector,
-    byCountry,
-  };
+  return { total: rows.length, bySector, byCountry };
 }

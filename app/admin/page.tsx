@@ -79,11 +79,8 @@ function Dashboard({ rows }: { rows: RegistrationRow[] }) {
 
   return (
     <>
-      <dl className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat label="Total inscriptos" value={metrics.total} highlight />
-        <Stat label="Organizaciones" value={metrics.organizations} />
-        <Stat label="Países" value={metrics.countries} />
-        <Stat label="Sectores" value={metrics.sectors} />
+      <dl className="mt-8 sm:max-w-xs">
+        <Stat label="Total inscriptos" value={metrics.total} />
       </dl>
 
       {metrics.total > 0 && (
@@ -101,17 +98,11 @@ function Dashboard({ rows }: { rows: RegistrationRow[] }) {
   );
 }
 
-function Stat({ label, value, highlight = false }: { label: string; value: number; highlight?: boolean }) {
+function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="border-2 border-terra-line bg-white px-5 py-4">
       <dt className="text-sm font-semibold tracking-wide text-terra-ink/80 uppercase">{label}</dt>
-      <dd
-        className={
-          highlight
-            ? "mt-1 text-4xl font-black text-terra-orange tabular-nums"
-            : "mt-1 text-4xl font-black text-terra-petrol tabular-nums"
-        }
-      >
+      <dd className="mt-1 text-4xl font-black text-terra-orange tabular-nums">
         {value}
       </dd>
     </div>

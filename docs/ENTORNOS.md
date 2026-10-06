@@ -9,7 +9,7 @@
 | Entorno | Base de datos | Dónde vive la configuración |
 |---|---|---|
 | Local (tu compu) | Proyecto Neon `encuentros-terraignis-dev` | `.env.local` (no se sube a git) |
-| Previews de Vercel | Rama automática por preview (integración Neon) | Vercel → Environment Variables → *Preview* |
+| Previews de Vercel | Sin base propia por ahora (sin `DATABASE_URL` en *Preview*: el formulario muestra el error amable) | Vercel → Environment Variables → *Preview* |
 | Producción | Proyecto Neon de producción, rama `main` | Vercel → Environment Variables → *Production* |
 
 **Por qué proyectos separados y no una rama `dev`:**
@@ -22,16 +22,20 @@
 
 ## 1. Producción (una sola vez)
 
+> Camino elegido: el proyecto Neon se crea **a mano en la consola de Neon** y la `DATABASE_URL` se carga **a mano en Vercel**. No conectar además la integración Neon de Vercel: crearía otra base y otra `DATABASE_URL`.
+
 1. **Subir el repo a GitHub** y en Vercel: *Add New → Project → Import* el repositorio.
-2. En el proyecto de Vercel: **Storage → Create Database → Neon** (plan Free).
-   - **Región: AWS South America East 1 (São Paulo)**. Las funciones de Vercel corren en San Pablo (`vercel.json` → `gru1`). Si Neon queda en otra región, cada consulta cruza el continente.
-   - Si ofrece crear **una rama por cada Preview deployment**: aceptar.
-   - La integración carga `DATABASE_URL` en Vercel automáticamente.
-3. **Crear la tabla en producción:** en Neon → proyecto de producción → rama `main` → **SQL Editor** → pegar el contenido de [`db/schema.sql`](../db/schema.sql) → *Run*. Es idempotente: ejecutarlo dos veces no rompe nada.
-4. En Vercel → **Settings → Environment Variables**, agregar para *Production* (y *Preview* si se quiere probar el panel en previews):
-   - `ADMIN_PASSWORD` → clave larga y única para el panel `/admin`. Compartirla solo con quienes operen el panel.
-5. **Redeploy** para que tome las variables (Deployments → ⋯ → Redeploy).
-6. Verificar:
+2. En [console.neon.tech](https://console.neon.tech) → **New project**:
+   - **Project name:** `encuentros-terraignis`
+   - **Region: AWS South America East 1 (São Paulo)**. Las funciones de Vercel corren en San Pablo (`vercel.json` → `gru1`); si Neon queda en otra región, cada consulta cruza el continente.
+   - **Services:** solo *Postgres database*. Object storage, Functions, AI gateway y Neon Auth apagados.
+3. **Connect** → rama `main` → *Connection pooling* activado → copiar la connection string (host con `-pooler`). **No pegarla en `.env.local`.**
+4. **Crear la tabla:** Neon → **SQL Editor** (rama `main`) → pegar el contenido de [`db/schema.sql`](../db/schema.sql) → *Run*. Es idempotente.
+5. En Vercel → **Settings → Environment Variables**, entorno **Production**:
+   - `DATABASE_URL` → la connection string del paso 3.
+   - `ADMIN_PASSWORD` → clave larga y única para el panel `/admin`.
+6. **Redeploy** para que tome las variables (Deployments → ⋯ → Redeploy).
+7. Verificar:
    - Una inscripción de prueba en la URL de producción → aparece en `/admin`.
    - `/admin/export` descarga el CSV.
    - Borrar la inscripción de prueba en Neon (SQL Editor): `DELETE FROM registrations WHERE email = 'tu-email-de-prueba';`
@@ -69,7 +73,7 @@
 
 | Variable | Local (`.env.local`) | Vercel Production | Notas |
 |---|---|---|---|
-| `DATABASE_URL` | Proyecto Neon **-dev** | La carga la integración (prod) | Solo servidor |
+| `DATABASE_URL` | Proyecto Neon **-dev** | Connection string de producción (cargada a mano) | Solo servidor |
 | `ADMIN_PASSWORD` | Clave local | Clave de producción | Sin ella `/admin` queda cerrado |
 | `RESEND_API_KEY` | (Fase 4) | (Fase 4) | Solo servidor |
 | `RESEND_FROM_EMAIL` | (Fase 4) | (Fase 4) | Remitente; cambiar de dominio no requiere tocar código |
@@ -77,9 +81,9 @@
 ## Checklist
 
 - [ ] Repo en GitHub e importado en Vercel
-- [ ] Neon de producción creado desde Vercel, región São Paulo
+- [ ] Neon de producción creado en la consola de Neon, región São Paulo, solo Postgres
 - [ ] Tabla creada en producción (SQL Editor, rama `main`)
-- [ ] `ADMIN_PASSWORD` cargada en Vercel + redeploy
+- [ ] `DATABASE_URL` y `ADMIN_PASSWORD` cargadas en Vercel (Production) + redeploy
 - [ ] Inscripción de prueba en producción visible en `/admin` y borrada
 - [ ] Proyecto Neon `encuentros-terraignis-dev` creado, región São Paulo
 - [ ] `.env.local` con la URL de -dev y clave local
