@@ -23,7 +23,7 @@ export function EventHeader() {
                   {item.label}
                   <span
                     aria-hidden="true"
-                    className="absolute inset-x-0 -bottom-0.5 h-0.5 origin-left scale-x-0 bg-white transition-transform group-hover:scale-x-100 motion-reduce:transition-none"
+                    className="absolute inset-x-0 -bottom-0.5 h-0.5 origin-left scale-x-0 bg-terra-orange transition-transform group-hover:scale-x-100 group-focus-visible:scale-x-100 motion-reduce:transition-none"
                   />
                 </a>
               </li>

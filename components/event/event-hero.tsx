@@ -13,6 +13,10 @@ import { event } from "@/content/event";
  * y tipografía + espacios en `svh` con clamp(), para notebooks bajas (1366×768) y celulares
  * (piso: 360×640). Criterio tomado de copat3D (trampa 14). Si se agrega contenido, volver a medir.
  */
+/* Padding izquierdo propio para no pisar la columna de franjas (compartido por contenido y pie). */
+const contentPadding =
+  "mx-auto w-full max-w-7xl pr-4 pl-14 sm:pr-6 sm:pl-20 md:pl-28 lg:pr-8 lg:pl-[max(2rem,calc(10rem_-_max(0px,(100vw_-_80rem)/2)))]";
+
 export function EventHero() {
   const { location } = event;
 
@@ -24,8 +28,7 @@ export function EventHero() {
     >
       <StripeColumn className="absolute inset-y-0 left-0 -z-10 h-full w-9 sm:w-12 md:w-16 lg:w-24 xl:w-[7.5rem]" />
 
-      {/* Padding izquierdo propio para no pisar la columna de franjas */}
-      <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-x-16 py-[clamp(0.75rem,3svh,4rem)] pr-4 pl-14 sm:pr-6 sm:pl-20 md:pl-28 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:pr-8 lg:pl-[max(2rem,calc(10rem_-_max(0px,(100vw_-_80rem)/2)))]">
+      <div className={`${contentPadding} flex flex-1 flex-col justify-center py-[clamp(0.75rem,3svh,3.5rem)]`}>
         <div>
           <p className="text-[clamp(1.25rem,min(5vw,4svh),3rem)] leading-none font-extralight tracking-wide uppercase">
             {event.eyebrow}
@@ -33,7 +36,7 @@ export function EventHero() {
 
           <h1
             id="hero-title"
-            className="mt-[clamp(0.25rem,1svh,0.75rem)] text-[clamp(2.25rem,min(11vw,9.5svh),7rem)] leading-[0.9] font-black tracking-[-0.025em] uppercase"
+            className="mt-[clamp(0.25rem,1svh,0.75rem)] text-[clamp(2.25rem,min(11vw,8.5svh),7rem)] leading-[0.9] font-black tracking-[-0.025em] uppercase"
           >
             {event.titleLines.map((line) => (
               <span key={line} className="block">
@@ -99,21 +102,23 @@ export function EventHero() {
             </Button>
           </div>
         </div>
+      </div>
 
-        {/* Organiza / Acompaña: columna derecha en desktop; abajo en celular (se oculta si la pantalla es muy baja). */}
-        <div className="mt-[clamp(1.25rem,4svh,3rem)] grid grid-cols-2 gap-6 [@media(max-height:700px)_and_(max-width:1023px)]:hidden lg:mt-0 lg:grid-cols-1 lg:gap-[clamp(1.25rem,4svh,2.5rem)] lg:pb-1">
+      {/* Pie del hero, como el de la tapa del PDF: Organiza / Acompaña en una fila. */}
+      <div className="border-t border-white/15 [@media(max-height:700px)_and_(max-width:1023px)]:hidden">
+        <div
+          className={`${contentPadding} grid grid-cols-2 gap-4 py-[clamp(0.75rem,2.2svh,1.25rem)] sm:flex sm:flex-wrap sm:items-center sm:gap-x-[clamp(2rem,5vw,4rem)] sm:gap-y-3`}
+        >
           {event.partnerGroups.map((group) => (
-            <div key={group.role}>
-              <p className="text-sm font-semibold sm:text-base">{group.role}:</p>
-              <div className="mt-2 flex flex-wrap items-center gap-6 sm:mt-3">
-                {group.partners.map((partner) => (
-                  <PartnerLogo
-                    key={partner.name}
-                    partner={partner}
-                    className="h-10 sm:h-12 lg:h-[clamp(2.75rem,6.5svh,3.75rem)]"
-                  />
-                ))}
-              </div>
+            <div key={group.role} className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-4">
+              <p className="text-xs font-semibold whitespace-nowrap sm:text-base">{group.role}:</p>
+              {group.partners.map((partner) => (
+                <PartnerLogo
+                  key={partner.name}
+                  partner={partner}
+                  className="h-8 self-start sm:h-[clamp(2.25rem,5svh,3rem)] sm:self-auto"
+                />
+              ))}
             </div>
           ))}
         </div>

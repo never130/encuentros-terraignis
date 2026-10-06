@@ -3,7 +3,7 @@
 import { MenuIcon, XIcon } from "lucide-react";
 import { useRef, useState, type MouseEvent } from "react";
 
-import { StripeColumn } from "@/components/brand/stripes";
+import { StripeBand } from "@/components/brand/stripes";
 import { TerraIgnisLogo } from "@/components/brand/terra-ignis-logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,12 +20,14 @@ import { navItems } from "@/content/navigation";
 /**
  * Menú móvil a pantalla completa (como copat3D), sobre el Sheet de Radix:
  * foco atrapado, Escape y bloqueo del scroll de fondo ya resueltos.
- * El logo y el botón de cerrar quedan en la misma posición que en el header.
+ * Fondo azul noche liso (no el degradé del hero) para que se distinga de la portada.
+ * Naranja sobre #152841 ≈ 5:1: sirve para el estado activo/foco de los ítems.
  */
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   // El scroll al ancla se hace al cerrar: mientras el Sheet está abierto el body está bloqueado.
   const pendingHash = useRef<string | null>(null);
+  const firstLink = useRef<HTMLAnchorElement>(null);
 
   function navigate(event: MouseEvent<HTMLAnchorElement>, href: string) {
     event.preventDefault();
@@ -39,7 +41,7 @@ export function MobileNav() {
         <Button
           variant="ghost"
           size="icon-lg"
-          className="size-11 text-white hover:bg-white/10 hover:text-white lg:hidden"
+          className="size-11 text-white hover:bg-white/10 hover:text-white focus-visible:ring-white lg:hidden"
           aria-label="Abrir menú"
         >
           <MenuIcon className="size-6" />
@@ -48,7 +50,12 @@ export function MobileNav() {
       <SheetContent
         side="right"
         showCloseButton={false}
-        className="surface-dark h-dvh gap-0 overflow-y-auto border-0 terra-gradient text-white data-[side=right]:w-full data-[side=right]:sm:max-w-none"
+        className="surface-dark h-dvh gap-0 overflow-y-auto border-0 bg-terra-navy text-white data-[side=right]:w-full data-[side=right]:sm:max-w-none"
+        // El foco inicial va al primer ítem del menú (no a la X), así lo primero que se ve es la navegación.
+        onOpenAutoFocus={(e) => {
+          e.preventDefault();
+          firstLink.current?.focus({ preventScroll: true });
+        }}
         onCloseAutoFocus={(e) => {
           const hash = pendingHash.current;
           if (!hash) return;
@@ -58,8 +65,6 @@ export function MobileNav() {
           history.replaceState(null, "", hash);
         }}
       >
-        <StripeColumn className="absolute top-16 bottom-0 left-0 -z-10 h-[calc(100%-4rem)] w-9 sm:w-12" />
-
         <div className="container-page flex h-16 shrink-0 items-center justify-between border-b border-white/15">
           <a href="#inicio" onClick={(e) => navigate(e, "#inicio")} className="shrink-0">
             <TerraIgnisLogo className="h-9" />
@@ -68,7 +73,7 @@ export function MobileNav() {
             <Button
               variant="ghost"
               size="icon-lg"
-              className="size-11 text-white hover:bg-white/10 hover:text-white"
+              className="size-11 text-white hover:bg-white/10 hover:text-white focus-visible:ring-white"
               aria-label="Cerrar menú"
             >
               <XIcon className="size-6" />
@@ -81,24 +86,41 @@ export function MobileNav() {
           Secciones del Encuentro {event.name}
         </SheetDescription>
 
-        <div className="flex flex-1 flex-col justify-center pt-8 pr-6 pb-10 pl-16 sm:pl-24">
-          <nav aria-label="Principal">
-            <ul>
-              {navItems.map((item) => (
+        <div className="container-page flex flex-1 flex-col justify-center py-10">
+          <p className="text-lg font-extralight tracking-wide uppercase">Encuentro:</p>
+          <p className="text-xl leading-tight font-extrabold uppercase">{event.name}</p>
+
+          <nav aria-label="Principal" className="mt-8">
+            <ol>
+              {navItems.map((item, index) => (
                 <li key={item.href}>
                   <a
+                    ref={index === 0 ? firstLink : undefined}
                     href={item.href}
                     onClick={(e) => navigate(e, item.href)}
-                    className="block border-b border-white/15 py-4 text-[clamp(1.75rem,8vw,2.5rem)] leading-tight font-extrabold tracking-tight uppercase"
+                    className="group relative flex items-baseline gap-4 border-b border-white/15 py-4 pl-4 outline-none transition-colors hover:text-terra-orange focus-visible:text-terra-orange"
                   >
-                    {item.label}
+                    {/* Barra de estado: aparece al pasar el mouse o con foco de teclado. */}
+                    <span
+                      aria-hidden="true"
+                      className="absolute inset-y-3 left-0 w-1 scale-y-0 bg-terra-orange transition-transform group-hover:scale-y-100 group-focus-visible:scale-y-100 motion-reduce:transition-none"
+                    />
+                    <span
+                      aria-hidden="true"
+                      className="w-7 text-sm font-bold text-terra-orange tabular-nums"
+                    >
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="text-[clamp(1.75rem,8vw,2.5rem)] leading-tight font-extrabold tracking-tight uppercase">
+                      {item.label}
+                    </span>
                   </a>
                 </li>
               ))}
-            </ul>
+            </ol>
           </nav>
 
-          <Button asChild variant="accent" size="cta" className="mt-9 w-full">
+          <Button asChild variant="accent" size="cta" className="mt-9 w-full focus-visible:ring-white">
             <a href="#inscripcion" onClick={(e) => navigate(e, "#inscripcion")}>
               Inscribirme
             </a>
@@ -110,6 +132,8 @@ export function MobileNav() {
             {event.location.name} · {event.location.city}, {event.location.province}
           </p>
         </div>
+
+        <StripeBand className="block h-16 w-full shrink-0 sm:h-20" />
       </SheetContent>
     </Sheet>
   );
