@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { consentText, registrationMessages, sectors } from "@/content/registration";
 import type { CountryOption } from "@/lib/countries";
+import { suggestEmail } from "@/lib/text/email-suggestion";
 import { registerAction, type RegistrationState } from "@/lib/registrations/actions";
 import {
   formDataToRegistration,
@@ -43,7 +44,15 @@ export function RegistrationForm({ countries }: { countries: CountryOption[] }) 
   const [state, formAction, isPending] = useActionState(registerAction, initialState);
   const [clientErrors, setClientErrors] = useState<FieldErrors>({});
   const [sector, setSector] = useState("");
+  const [emailSuggestion, setEmailSuggestion] = useState<string | null>(null);
   const statusRef = useRef<HTMLParagraphElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  // Momento en que el formulario quedó listo: el servidor descarta envíos de menos de 1,5 s (bots).
+  const readyAt = useRef(0);
+
+  useEffect(() => {
+    readyAt.current = performance.now();
+  }, []);
 
   const errors =
     Object.keys(clientErrors).length > 0
@@ -55,13 +64,17 @@ export function RegistrationForm({ countries }: { countries: CountryOption[] }) 
   const statusMessage =
     state.status === "duplicate"
       ? registrationMessages.duplicate
-      : state.status === "error"
-        ? registrationMessages.error
-        : null;
+      : state.status === "rate_limited"
+        ? registrationMessages.rateLimited
+        : state.status === "error"
+          ? registrationMessages.error
+          : null;
 
   useEffect(() => {
     if (state.status === "invalid") focusFirstError(state.fieldErrors);
-    if (state.status === "duplicate" || state.status === "error") statusRef.current?.focus();
+    if (state.status === "duplicate" || state.status === "rate_limited" || state.status === "error") {
+      statusRef.current?.focus();
+    }
   }, [state]);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -78,6 +91,7 @@ export function RegistrationForm({ countries }: { countries: CountryOption[] }) 
     }
 
     setClientErrors({});
+    formData.set("elapsed", String(Math.round(performance.now() - readyAt.current)));
     startTransition(() => formAction(formData));
   }
 
@@ -216,9 +230,28 @@ export function RegistrationForm({ countries }: { countries: CountryOption[] }) 
           autoComplete="email"
           autoCapitalize="none"
           spellCheck={false}
+          ref={emailRef}
+          onBlur={(event) => setEmailSuggestion(suggestEmail(event.target.value))}
           className={inputClassName}
           {...a11y("email", errors)}
         />
+        {emailSuggestion && (
+          <p className="text-sm text-terra-ink" role="status">
+            ¿Quisiste decir{" "}
+            <button
+              type="button"
+              className="font-bold text-terra-petrol underline underline-offset-2"
+              onClick={() => {
+                if (emailRef.current) emailRef.current.value = emailSuggestion;
+                setEmailSuggestion(null);
+                clearError("email");
+              }}
+            >
+              {emailSuggestion}
+            </button>
+            ?
+          </p>
+        )}
       </Field>
 
       <Field

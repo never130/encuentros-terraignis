@@ -23,5 +23,6 @@ export const registrationMessages = {
   duplicate: "Este correo ya posee una inscripción registrada para el encuentro.",
   error: "No pudimos completar la inscripción. Intentá nuevamente en unos instantes.",
   invalid: "Revisá los campos marcados.",
+  rateLimited: "Recibimos muchos intentos desde tu conexión. Esperá unos minutos y volvé a intentar.",
   pending: "Confirmando inscripción...",
 } as const;

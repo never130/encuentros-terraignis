@@ -2,34 +2,39 @@ import { z } from "zod";
 
 import { sectors, type SectorValue } from "@/content/registration";
 import { isCountryCode } from "@/lib/countries";
+import { capitalizeFirst, collapseSpaces, toNameCase, toSentenceCase } from "@/lib/text/normalize";
 
 /* Schema único: lo usan el formulario (cliente) y la Server Action (servidor). */
 
 const sectorValues = sectors.map((sector) => sector.value) as [SectorValue, ...SectorValue[]];
 
-const requiredText = (max: number) =>
+/* Los textos se guardan normalizados: espacios simples y mayúsculas prolijas (ver lib/text/normalize). */
+const requiredText = (max: number, format: (value: string) => string = collapseSpaces) =>
   z
     .string()
-    .trim()
-    .min(1, "Completá este campo.")
-    .max(max, `Máximo ${max} caracteres.`);
+    .transform(collapseSpaces)
+    .pipe(z.string().min(1, "Completá este campo.").max(max, `Máximo ${max} caracteres.`))
+    .transform(format);
 
-const optionalText = (max: number) =>
+const optionalText = (max: number, format: (value: string) => string = collapseSpaces) =>
   z
     .string()
-    .trim()
-    .max(max, `Máximo ${max} caracteres.`)
-    .transform((value) => value || undefined);
+    .transform(collapseSpaces)
+    .pipe(z.string().max(max, `Máximo ${max} caracteres.`))
+    .transform((value) => (value ? format(value) : undefined));
+
+/* Los bots de spam suelen meter links en el campo nombre. */
+const hasLink = (value: string) => /(https?:\/\/|www\.|\.(com|net|org|ru|xyz)\b)/i.test(value);
 
 export const registrationSchema = z
   .object({
-    fullName: requiredText(160),
-    organization: requiredText(200),
-    role: requiredText(160),
+    fullName: requiredText(160, toNameCase).refine((value) => !hasLink(value), "Ingresá solo tu nombre y apellido."),
+    organization: requiredText(200, capitalizeFirst),
+    role: requiredText(160, toSentenceCase),
     sector: z.enum(sectorValues, { error: "Seleccioná un sector." }),
-    sectorOther: optionalText(160),
-    city: requiredText(120),
-    region: optionalText(120),
+    sectorOther: optionalText(160, toSentenceCase),
+    city: requiredText(120, toNameCase),
+    region: optionalText(120, toNameCase),
     country: z.string().refine(isCountryCode, "Seleccioná un país."),
     email: z
       .string()

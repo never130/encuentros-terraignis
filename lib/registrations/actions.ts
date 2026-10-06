@@ -1,11 +1,13 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { after } from "next/server";
 
 import { event } from "@/content/event";
 import { privacyVersion, successPath } from "@/content/registration";
 import { sendRegistrationConfirmation } from "@/lib/email/send-registration-confirmation";
+import { createLimiter } from "@/lib/rate-limit";
 import { insertRegistration, markConfirmationSent } from "@/lib/registrations/repository";
 import {
   formDataToRegistration,
@@ -18,7 +20,17 @@ export type RegistrationState =
   | { status: "idle" }
   | { status: "invalid"; fieldErrors: FieldErrors }
   | { status: "duplicate" }
+  | { status: "rate_limited" }
   | { status: "error" };
+
+/** Un humano tarda varios segundos en completar el formulario; un bot, milisegundos. */
+const MIN_FILL_MS = 1500;
+
+/**
+ * 15 envíos cada 10 minutos por IP (en memoria, como copat3D: frena scripts, no a alguien
+ * decidido). Alto a propósito: desde una misma oficina pueden inscribirse varias personas.
+ */
+const exceedsSubmitLimit = createLimiter(10 * 60 * 1000, 15);
 
 export async function registerAction(
   _previous: RegistrationState,
@@ -28,6 +40,18 @@ export async function registerAction(
   const honeypot = formData.get("website");
   if (typeof honeypot === "string" && honeypot.trim() !== "") {
     redirect(successPath);
+  }
+
+  // Tiempo de completado medido en el navegador (no depende del reloj del servidor).
+  // Sin el dato o demasiado rápido: bot. También se simula éxito, para no darle pistas.
+  const elapsed = Number(formData.get("elapsed"));
+  if (!Number.isFinite(elapsed) || elapsed < MIN_FILL_MS) {
+    redirect(successPath);
+  }
+
+  const ip = (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() || "sin-ip";
+  if (exceedsSubmitLimit(ip)) {
+    return { status: "rate_limited" };
   }
 
   const parsed = registrationSchema.safeParse(formDataToRegistration(formData));
