@@ -1,0 +1,184 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Identidad oficial Terra Ignis Energía.
+ * Únicos colores institucionales: Pantone 7476 C (#0D5257) y Pantone Orange C (#FF5E00).
+ * Todo otro tono de este archivo es funcional y se deriva de ellos (color-mix / alpha);
+ * no forma parte del brandbook.
+ */
+:root {
+  --terra-petrol: #0d5257;
+  --terra-orange: #ff5e00;
+  --terra-white: #ffffff;
+
+  /*
+   * Tomados de la pieza oficial del programa (PDF del equipo gráfico):
+   * degradé teal → petrol oficial (al 30 %) → azul noche, texto y filetes.
+   */
+  --terra-teal: #098188;
+  --terra-navy: #152841;
+  --terra-ink: #0d2532;
+  --terra-line: #606060;
+  --terra-gradient: linear-gradient(
+    180deg,
+    var(--terra-teal) 0%,
+    #0b6a71 20%,
+    var(--terra-petrol) 30%,
+    #103035 50%,
+    #12232b 70%,
+    var(--terra-navy) 100%
+  );
+  /* Variante del hero: llega antes al tramo oscuro para que la bajada naranja mantenga ≥ 3:1 */
+  --terra-gradient-hero: linear-gradient(
+    180deg,
+    var(--terra-teal) 0%,
+    var(--terra-petrol) 16%,
+    #103035 32%,
+    #12232b 55%,
+    var(--terra-navy) 100%
+  );
+
+  /* Derivados funcionales */
+  --terra-petrol-tint: color-mix(in srgb, var(--terra-petrol) 4%, white);
+  --terra-orange-hover: color-mix(in oklab, var(--terra-orange) 88%, black);
+
+  /* Tokens semánticos (shadcn/ui) */
+  --background: var(--terra-white);
+  --foreground: var(--terra-petrol);
+  --card: var(--terra-white);
+  --card-foreground: var(--terra-petrol);
+  --popover: var(--terra-white);
+  --popover-foreground: var(--terra-petrol);
+  --primary: var(--terra-petrol);
+  --primary-foreground: var(--terra-white);
+  --secondary: var(--terra-petrol-tint);
+  --secondary-foreground: var(--terra-petrol);
+  --muted: var(--terra-petrol-tint);
+  /* 80 % petrol sobre blanco ≈ 5.2:1 (AA texto normal) */
+  --muted-foreground: color-mix(in srgb, var(--terra-petrol) 80%, white);
+  /* En shadcn "accent" es el fondo de hover de menús/ítems, no el acento de marca */
+  --accent: color-mix(in srgb, var(--terra-petrol) 8%, white);
+  --accent-foreground: var(--terra-petrol);
+  /* Acento de marca */
+  --brand-accent: var(--terra-orange);
+  --brand-accent-foreground: var(--terra-white);
+  /* Rojo funcional exclusivo para estados de error */
+  --destructive: #b42318;
+  --border: color-mix(in srgb, var(--terra-petrol) 15%, white);
+  /* 65 % petrol sobre blanco ≈ 3.6:1 (WCAG 1.4.11 para bordes de campos) */
+  --input: color-mix(in srgb, var(--terra-petrol) 65%, white);
+  --ring: var(--terra-orange);
+  --radius: 0.25rem;
+}
+
+@theme inline {
+  --color-terra-petrol: var(--terra-petrol);
+  --color-terra-petrol-tint: var(--terra-petrol-tint);
+  --color-terra-orange: var(--terra-orange);
+  --color-terra-orange-hover: var(--terra-orange-hover);
+  --color-terra-white: var(--terra-white);
+  --color-terra-teal: var(--terra-teal);
+  --color-terra-navy: var(--terra-navy);
+  --color-terra-ink: var(--terra-ink);
+  --color-terra-line: var(--terra-line);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-accent-foreground: var(--brand-accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+}
+
+/* Superficies petrol: el anillo de foco pasa a blanco (naranja sobre petrol ≈ 2.9:1) */
+.surface-dark {
+  --ring: var(--terra-white);
+}
+
+.surface-light {
+  --ring: var(--terra-orange);
+}
+
+@utility terra-gradient {
+  background-color: var(--terra-navy);
+  background-image: var(--terra-gradient);
+}
+
+@utility terra-gradient-hero {
+  background-color: var(--terra-navy);
+  background-image: var(--terra-gradient-hero);
+}
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 1.5rem;
+  }
+
+  @media (width >= 64rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring;
+  }
+
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+
+  a:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
