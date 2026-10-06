@@ -16,7 +16,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es" className={outfit.variable}>
-      <body className="min-h-dvh">{children}</body>
+      {/* Extensiones como ColorZilla agregan atributos al <body> antes de hidratar. */}
+      <body className="min-h-dvh" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

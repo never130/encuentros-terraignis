@@ -16,6 +16,24 @@ npm run build    # build de producción
 npm run lint
 ```
 
+## Base de datos (Neon)
+
+1. En Vercel: proyecto → **Storage → Create Database → Neon** (plan Free). Esto agrega `DATABASE_URL` a las variables del proyecto.
+2. Para desarrollo local, copiar `.env.example` a `.env.local` y pegar la `DATABASE_URL` (Neon → Connection string).
+3. Crear la tabla: `npm run db:setup` (o pegar `db/schema.sql` en el SQL Editor de Neon). Es idempotente.
+
+Flujo de inscripción: formulario → Zod (cliente) → Server Action → Zod (servidor) → honeypot → `INSERT … ON CONFLICT DO NOTHING` (duplicado = mismo encuentro + email) → `/inscripcion/exito`.
+
+## Panel admin (`/admin`)
+
+Protegido con HTTP Basic Auth (patrón de copat3D): `proxy.ts` pide la contraseña y cada ruta del panel la vuelve a verificar. Se configura con `ADMIN_PASSWORD` en Vercel y en `.env.local`; sin esa variable el panel queda cerrado. El usuario del diálogo del navegador se ignora.
+
+- Métricas: total de inscriptos, organizaciones, países, sectores y desglose por sector y país.
+- Tabla con búsqueda (nombre, empresa, email), filtros por país y sector, orden y paginación de a 50.
+- `/admin/export`: CSV para Excel en español (`;`, BOM UTF-8, fórmulas neutralizadas).
+- Freno de 10 intentos fallidos por IP cada 15 minutos (en memoria; para un límite real, una regla de Cloudflare).
+- Las funciones corren en San Pablo (`vercel.json` → `gru1`): crear Neon en **AWS São Paulo** para que cada consulta no cruce a EE. UU.
+
 ## Estructura
 
 ```

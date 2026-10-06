@@ -13,3 +13,15 @@ export type SectorValue = (typeof sectors)[number]["value"];
 
 export const consentText =
   "Autorizo el uso de los datos consignados en este formulario para la organización y las comunicaciones vinculadas al Encuentro.";
+
+export const successPath = "/inscripcion/exito";
+
+/** Versión del texto de consentimiento que se guarda con cada inscripción. Cambiarla si cambia el texto. */
+export const privacyVersion = "2026-10-v1";
+
+export const registrationMessages = {
+  duplicate: "Este correo ya posee una inscripción registrada para el encuentro.",
+  error: "No pudimos completar la inscripción. Intentá nuevamente en unos instantes.",
+  invalid: "Revisá los campos marcados.",
+  pending: "Confirmando inscripción...",
+} as const;
