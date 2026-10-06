@@ -5,7 +5,7 @@ Plataforma web del Encuentro **Repensar las Cuencas Maduras** (26 y 27 de noviem
 ## Stack
 
 Next.js (App Router) · TypeScript strict · Tailwind CSS v4 · shadcn/ui · Outfit (`next/font/google`) · Vercel.
-Fases siguientes: Zod, Neon PostgreSQL (`@neondatabase/serverless`) y Resend.
+Zod, Neon PostgreSQL (`@neondatabase/serverless`) y email por SMTP (Gmail) con Nodemailer.
 
 ## Desarrollo
 
@@ -20,17 +20,26 @@ npm run lint
 
 > Guía completa para separar desarrollo local y producción: [docs/ENTORNOS.md](docs/ENTORNOS.md).
 
-1. En Vercel: proyecto → **Storage → Create Database → Neon** (plan Free). Esto agrega `DATABASE_URL` a las variables del proyecto.
-2. Para desarrollo local, copiar `.env.example` a `.env.local` y pegar la `DATABASE_URL` (Neon → Connection string).
+1. Producción: proyecto Neon creado en la consola (São Paulo) y `DATABASE_URL` cargada a mano en Vercel.
+2. Desarrollo local: otro proyecto Neon (`-dev`); su `DATABASE_URL` va en `.env.local`.
 3. Crear la tabla: `npm run db:setup` (o pegar `db/schema.sql` en el SQL Editor de Neon). Es idempotente.
 
 Flujo de inscripción: formulario → Zod (cliente) → Server Action → Zod (servidor) → honeypot → `INSERT … ON CONFLICT DO NOTHING` (duplicado = mismo encuentro + email) → `/inscripcion/exito`.
+
+## Email de confirmación
+
+Después de guardar la inscripción, la Server Action programa el envío con `after()` (no demora la respuesta). Si el envío sale, se marca `email_sent`; si falla, la inscripción sigue válida y figura "Pendiente" en `/admin`. Configuración de la cuenta Gmail: [docs/ENTORNOS.md](docs/ENTORNOS.md#4-email-de-confirmación-gmail).
+
+## Compartir y QR
+
+- `app/opengraph-image.png` (1200×630): vista previa del link en WhatsApp, LinkedIn, etc.
+- `docs/qr/`: QR de la invitación hacia `/#inscripcion` (SVG para imprenta y PNG).
 
 ## Panel admin (`/admin`)
 
 Protegido con HTTP Basic Auth (patrón de copat3D): `proxy.ts` pide la contraseña y cada ruta del panel la vuelve a verificar. Se configura con `ADMIN_PASSWORD` en Vercel y en `.env.local`; sin esa variable el panel queda cerrado. El usuario del diálogo del navegador se ignora.
 
-- Métricas: total de inscriptos, organizaciones, países, sectores y desglose por sector y país.
+- Métricas: total de inscriptos y desglose por sector y por país.
 - Tabla con búsqueda (nombre, empresa, email), filtros por país y sector, orden y paginación de a 50.
 - `/admin/export`: CSV para Excel en español (`;`, BOM UTF-8, fórmulas neutralizadas).
 - Freno de 10 intentos fallidos por IP cada 15 minutos (en memoria; para un límite real, una regla de Cloudflare).

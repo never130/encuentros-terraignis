@@ -1,10 +1,12 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 
 import { event } from "@/content/event";
 import { privacyVersion, successPath } from "@/content/registration";
-import { insertRegistration } from "@/lib/registrations/repository";
+import { sendRegistrationConfirmation } from "@/lib/email/send-registration-confirmation";
+import { insertRegistration, markConfirmationSent } from "@/lib/registrations/repository";
 import {
   formDataToRegistration,
   registrationSchema,
@@ -46,7 +48,19 @@ export async function registerAction(
     return { status: "duplicate" };
   }
 
-  // Fase 4: intentar el email de confirmación aquí, sin afectar la inscripción guardada.
+  // La inscripción ya está guardada. El email se intenta DESPUÉS de responder (after):
+  // la persona ve la confirmación al instante y una falla del correo nunca la invalida.
+  const registrationId = result.id;
+  const { email, fullName } = parsed.data;
+  after(async () => {
+    const sent = await sendRegistrationConfirmation({ email, fullName });
+    if (sent.status !== "sent") return;
+    try {
+      await markConfirmationSent(registrationId);
+    } catch (error) {
+      console.error("[registro] El email salió pero no se pudo marcar email_sent", error);
+    }
+  });
 
   redirect(successPath);
 }

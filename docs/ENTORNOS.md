@@ -75,8 +75,31 @@
 |---|---|---|---|
 | `DATABASE_URL` | Proyecto Neon **-dev** | Connection string de producción (cargada a mano) | Solo servidor |
 | `ADMIN_PASSWORD` | Clave local | Clave de producción | Sin ella `/admin` queda cerrado |
-| `RESEND_API_KEY` | (Fase 4) | (Fase 4) | Solo servidor |
-| `RESEND_FROM_EMAIL` | (Fase 4) | (Fase 4) | Remitente; cambiar de dominio no requiere tocar código |
+| `SMTP_USER` | Cuenta Gmail (puede ser la misma) | Cuenta Gmail del encuentro | Remitente del email de confirmación |
+| `SMTP_PASSWORD` | Contraseña de aplicación | Contraseña de aplicación | **No** es la clave de la cuenta. Solo servidor |
+| `EMAIL_FROM_NAME` | Opcional | Opcional | Nombre visible del remitente (por defecto "Encuentros Terra Ignis") |
+
+## 4. Email de confirmación (Gmail)
+
+El email se envía por SMTP desde una **cuenta Gmail dedicada** (no se puede enviar "desde" `vercel.app`: ningún proveedor permite usar un dominio que no se controla).
+
+1. Crear una cuenta Gmail para el encuentro (por ejemplo `encuentros.terraignis@gmail.com`).
+2. En esa cuenta: [myaccount.google.com/security](https://myaccount.google.com/security) → activar **Verificación en 2 pasos**.
+3. [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords) → crear una **contraseña de aplicación** (nombre: "Encuentros web"). Google muestra 16 letras una sola vez.
+4. Cargar en Vercel (Production) y en `.env.local`:
+   - `SMTP_USER` = la dirección Gmail
+   - `SMTP_PASSWORD` = las 16 letras (con o sin espacios)
+5. Redeploy y hacer una inscripción de prueba: tiene que llegar el email y en `/admin` la fila pasa a **Enviado**.
+
+**Límites y comportamiento:**
+- Gmail permite ~**500 envíos por día**. Si se supera, la inscripción se guarda igual y queda **Pendiente** en `/admin`.
+- Si faltan las variables, no se intenta enviar (la inscripción se guarda igual).
+- El email sale después de responder al usuario: la pantalla de éxito no espera al correo.
+- Para pasar a un dominio institucional (Resend + DNS de Terra Ignis) se cambia solo `lib/email/send-registration-confirmation.ts`.
+
+## 5. QR de la invitación
+
+`docs/qr/qr-inscripcion.svg` (para imprenta, vectorial) y `docs/qr/qr-inscripcion.png` (2048 px) apuntan a `https://encuentros-terraignis.vercel.app/#inscripcion`. Negro sobre blanco, con margen (quiet zone) de 4 módulos: no recortar el borde blanco. Probar con Android, iPhone, en pantalla y en papel antes de imprimir.
 
 ## Checklist
 
@@ -89,3 +112,8 @@
 - [ ] `.env.local` con la URL de -dev y clave local
 - [ ] `npm run db:setup` mostró el host de -dev
 - [ ] Inscripción local visible en `localhost:3000/admin`
+- [ ] Cuenta Gmail del encuentro con verificación en 2 pasos y contraseña de aplicación
+- [ ] `SMTP_USER` y `SMTP_PASSWORD` en Vercel (Production) + redeploy
+- [ ] Inscripción de prueba: llega el email y figura "Enviado" en `/admin`
+- [ ] Vista previa del link probada en WhatsApp (imagen Open Graph)
+- [ ] QR probado en Android, iPhone, pantalla y papel

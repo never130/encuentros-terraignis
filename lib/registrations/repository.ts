@@ -37,3 +37,13 @@ export async function insertRegistration(
   const [row] = rows as { id: string }[];
   return row ? { status: "created", id: row.id } : { status: "duplicate" };
 }
+
+/** Registra que el email de confirmación salió. Si nunca se llama, queda "Pendiente" en /admin. */
+export async function markConfirmationSent(id: string): Promise<void> {
+  const sql = getSql();
+  await sql`
+    UPDATE registrations
+    SET email_sent = true, email_sent_at = now()
+    WHERE id = ${id}
+  `;
+}
