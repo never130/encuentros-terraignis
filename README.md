@@ -18,6 +18,8 @@ npm run lint
 
 ## Base de datos (Neon)
 
+> Guía completa para separar desarrollo local y producción: [docs/ENTORNOS.md](docs/ENTORNOS.md).
+
 1. En Vercel: proyecto → **Storage → Create Database → Neon** (plan Free). Esto agrega `DATABASE_URL` a las variables del proyecto.
 2. Para desarrollo local, copiar `.env.example` a `.env.local` y pegar la `DATABASE_URL` (Neon → Connection string).
 3. Crear la tabla: `npm run db:setup` (o pegar `db/schema.sql` en el SQL Editor de Neon). Es idempotente.

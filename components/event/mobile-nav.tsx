@@ -1,20 +1,27 @@
 "use client";
 
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, XIcon } from "lucide-react";
 import { useRef, useState, type MouseEvent } from "react";
 
+import { StripeColumn } from "@/components/brand/stripes";
+import { TerraIgnisLogo } from "@/components/brand/terra-ignis-logo";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetDescription,
-  SheetFooter,
-  SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { event } from "@/content/event";
 import { navItems } from "@/content/navigation";
 
+/**
+ * Menú móvil a pantalla completa (como copat3D), sobre el Sheet de Radix:
+ * foco atrapado, Escape y bloqueo del scroll de fondo ya resueltos.
+ * El logo y el botón de cerrar quedan en la misma posición que en el header.
+ */
 export function MobileNav() {
   const [open, setOpen] = useState(false);
   // El scroll al ancla se hace al cerrar: mientras el Sheet está abierto el body está bloqueado.
@@ -40,49 +47,69 @@ export function MobileNav() {
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="surface-dark w-full gap-0 border-white/10 terra-gradient text-white sm:max-w-sm [&>[data-slot=sheet-close]]:size-11 [&>[data-slot=sheet-close]]:text-white [&>[data-slot=sheet-close]]:hover:bg-white/10 [&>[data-slot=sheet-close]]:hover:text-white [&>[data-slot=sheet-close]_svg]:size-6"
-        onCloseAutoFocus={(event) => {
+        showCloseButton={false}
+        className="surface-dark h-dvh gap-0 overflow-y-auto border-0 terra-gradient text-white data-[side=right]:w-full data-[side=right]:sm:max-w-none"
+        onCloseAutoFocus={(e) => {
           const hash = pendingHash.current;
           if (!hash) return;
-          event.preventDefault();
+          e.preventDefault();
           pendingHash.current = null;
           document.querySelector(hash)?.scrollIntoView();
           history.replaceState(null, "", hash);
         }}
       >
-        <SheetHeader className="px-6 pt-6">
-          <SheetTitle className="text-xs font-semibold tracking-[0.28em] text-white uppercase">
-            Menú
-          </SheetTitle>
-          <SheetDescription className="sr-only">
-            Secciones del Encuentro Repensar las Cuencas Maduras
-          </SheetDescription>
-        </SheetHeader>
-        <nav aria-label="Principal" className="px-6 pt-4">
-          <ul>
-            {navItems.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  onClick={(event) => navigate(event, item.href)}
-                  className="block border-b border-white/10 py-4 text-2xl font-semibold tracking-tight uppercase"
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <SheetFooter className="p-6">
-          <Button asChild variant="accent" size="cta" className="w-full">
-            <a
-              href="#inscripcion"
-              onClick={(event) => navigate(event, "#inscripcion")}
+        <StripeColumn className="absolute top-16 bottom-0 left-0 -z-10 h-[calc(100%-4rem)] w-9 sm:w-12" />
+
+        <div className="container-page flex h-16 shrink-0 items-center justify-between border-b border-white/15">
+          <a href="#inicio" onClick={(e) => navigate(e, "#inicio")} className="shrink-0">
+            <TerraIgnisLogo className="h-9" />
+          </a>
+          <SheetClose asChild>
+            <Button
+              variant="ghost"
+              size="icon-lg"
+              className="size-11 text-white hover:bg-white/10 hover:text-white"
+              aria-label="Cerrar menú"
             >
+              <XIcon className="size-6" />
+            </Button>
+          </SheetClose>
+        </div>
+
+        <SheetTitle className="sr-only">Menú</SheetTitle>
+        <SheetDescription className="sr-only">
+          Secciones del Encuentro {event.name}
+        </SheetDescription>
+
+        <div className="flex flex-1 flex-col justify-center pt-8 pr-6 pb-10 pl-16 sm:pl-24">
+          <nav aria-label="Principal">
+            <ul>
+              {navItems.map((item) => (
+                <li key={item.href}>
+                  <a
+                    href={item.href}
+                    onClick={(e) => navigate(e, item.href)}
+                    className="block border-b border-white/15 py-4 text-[clamp(1.75rem,8vw,2.5rem)] leading-tight font-extrabold tracking-tight uppercase"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <Button asChild variant="accent" size="cta" className="mt-9 w-full">
+            <a href="#inscripcion" onClick={(e) => navigate(e, "#inscripcion")}>
               Inscribirme
             </a>
           </Button>
-        </SheetFooter>
+
+          <p className="mt-7 text-white/85">
+            {event.dateLabel}
+            <br />
+            {event.location.name} · {event.location.city}, {event.location.province}
+          </p>
+        </div>
       </SheetContent>
     </Sheet>
   );
