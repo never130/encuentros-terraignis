@@ -32,6 +32,10 @@ export const event = {
     "Una agenda federal para el desarrollo de los hidrocarburos convencionales",
   description:
     "Un espacio federal de diálogo e intercambio entre autoridades nacionales y provinciales, empresas de energía, operadores, organizaciones gremiales, proveedores y referentes del sector, para compartir experiencias y abordar los desafíos y oportunidades de una nueva etapa de los hidrocarburos convencionales.",
+  audience: {
+    title: "¿A quién está dirigido?",
+    text: "El encuentro está dirigido a autoridades nacionales y provinciales, representantes de empresas del sector energético, compañías operadoras, cámaras empresarias, empresas de servicios y proveedores, organizaciones gremiales, especialistas y referentes de la industria hidrocarburífera.",
+  },
   axes: [
     "Inversión",
     "Competitividad",

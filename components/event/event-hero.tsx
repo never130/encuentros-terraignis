@@ -5,6 +5,7 @@ import { StripeColumn } from "@/components/brand/stripes";
 import { PartnerLogo } from "@/components/partners/partner-logo";
 import { Button } from "@/components/ui/button";
 import { event } from "@/content/event";
+import { ctaLabels } from "@/content/navigation";
 
 /*
  * Traducción web de la tapa del programa oficial.
@@ -28,7 +29,7 @@ export function EventHero() {
     >
       <StripeColumn className="absolute inset-y-0 left-0 -z-10 h-full w-9 sm:w-12 md:w-16 lg:w-24 xl:w-[7.5rem]" />
 
-      <div className={`${contentPadding} flex flex-1 flex-col justify-center py-[clamp(0.75rem,3svh,3.5rem)]`}>
+      <div className={`${contentPadding} flex flex-1 flex-col justify-center py-[clamp(0.75rem,2svh,3.5rem)] sm:py-[clamp(0.75rem,3svh,3.5rem)]`}>
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-x-[clamp(2.5rem,5vw,5rem)]">
         <div>
           <p className="text-[clamp(1.25rem,min(5vw,4svh),3rem)] leading-none font-extralight tracking-wide uppercase">
@@ -37,7 +38,7 @@ export function EventHero() {
 
           <h1
             id="hero-title"
-            className="mt-[clamp(0.25rem,1svh,0.75rem)] text-[clamp(2.25rem,min(11vw,9.5svh),7rem)] leading-[0.9] font-black tracking-[-0.025em] uppercase"
+            className="mt-[clamp(0.25rem,1svh,0.75rem)] text-[clamp(2.25rem,min(11vw,8svh),6.25rem)] leading-[0.9] font-black tracking-[-0.025em] uppercase"
           >
             {event.titleLines.map((line) => (
               <span key={line} className="block">
@@ -46,21 +47,21 @@ export function EventHero() {
             ))}
           </h1>
 
-          <NotchRule className="mt-[clamp(1rem,3svh,2rem)] max-w-2xl text-white" />
+          <NotchRule className="mt-[clamp(0.75rem,2.4svh,1.75rem)] max-w-2xl text-white" />
 
           {/* ≥ 20 px extrabold: naranja sobre el degradé oscuro cumple como texto grande WCAG. */}
-          <p className="mt-[clamp(0.75rem,3svh,2rem)] max-w-2xl text-[clamp(1.25rem,min(5.2vw,3.6svh),2.25rem)] leading-tight font-extrabold text-pretty text-terra-orange">
+          <p className="mt-[clamp(0.75rem,2.4svh,1.75rem)] max-w-2xl text-[clamp(1.25rem,min(5.2vw,3.2svh),2rem)] leading-tight font-extrabold text-pretty text-terra-orange">
             {event.tagline}
           </p>
 
-          <ul className="mt-[clamp(1rem,3.5svh,2.5rem)] grid gap-[clamp(0.75rem,2svh,1.5rem)] sm:grid-cols-2 sm:gap-8">
+          <ul className="mt-[clamp(0.75rem,2.6svh,2rem)] grid gap-[clamp(0.5rem,1.6svh,1.25rem)] sm:grid-cols-2 sm:gap-8">
             <li className="flex items-center gap-3 sm:gap-4">
               <CalendarDaysIcon
                 aria-hidden="true"
                 strokeWidth={1.75}
-                className="size-9 shrink-0 text-terra-orange sm:size-[clamp(2.5rem,6svh,3.5rem)]"
+                className="size-8 shrink-0 text-terra-orange sm:size-[clamp(2.25rem,5svh,3rem)]"
               />
-              <p className="text-[clamp(1.25rem,min(5.2vw,3.4svh),1.875rem)] leading-[1.05] font-extrabold text-terra-orange">
+              <p className="text-[clamp(1.125rem,min(5vw,3svh),1.75rem)] leading-[1.05] font-extrabold">
                 <span className="block whitespace-nowrap">{event.dateLines[0]}</span>
                 <span className="block whitespace-nowrap">{event.dateLines[1]}</span>
               </p>
@@ -69,9 +70,9 @@ export function EventHero() {
               <MapPinIcon
                 aria-hidden="true"
                 strokeWidth={1.75}
-                className="size-9 shrink-0 text-terra-orange sm:size-[clamp(2.5rem,6svh,3.5rem)]"
+                className="size-8 shrink-0 text-terra-orange sm:size-[clamp(2.25rem,5svh,3rem)]"
               />
-              <p className="text-base leading-snug sm:text-[clamp(1rem,2.2svh,1.25rem)]">
+              <p className="text-[0.9375rem] leading-snug sm:text-[clamp(0.9375rem,2svh,1.125rem)]">
                 <strong className="font-extrabold">{location.name}.</strong> {location.address}
                 <br />
                 {location.regionLabel}
@@ -79,10 +80,20 @@ export function EventHero() {
             </li>
           </ul>
 
-          <div className="mt-[clamp(1.25rem,4svh,3rem)] flex flex-col items-start gap-x-3 gap-y-3 sm:flex-row sm:items-center">
+          {/* Pedido de la organización: a quién está dirigido, entre fecha/lugar y los botones. */}
+          <div className="mt-[clamp(0.75rem,2.6svh,1.75rem)] max-w-3xl">
+            <h2 className="text-xl leading-tight font-extrabold text-terra-orange sm:text-[clamp(1.25rem,2.6svh,1.5rem)]">
+              {event.audience.title}
+            </h2>
+            <p className="mt-1 text-sm leading-snug text-pretty text-white/90 sm:text-[clamp(0.9375rem,2svh,1.125rem)]">
+              {event.audience.text}
+            </p>
+          </div>
+
+          <div className="mt-[clamp(1rem,3svh,2.25rem)] flex flex-col items-start gap-x-3 gap-y-3 sm:flex-row sm:items-center">
             <Button asChild variant="accent" size="cta" className="h-[clamp(3rem,6.5svh,3.5rem)] w-full sm:w-auto">
               <a href="#inscripcion">
-                Inscribirme
+                {ctaLabels.primary}
                 <ArrowRightIcon aria-hidden="true" />
               </a>
             </Button>
@@ -128,7 +139,7 @@ export function EventHero() {
       </div>
 
       {/* Celular y tablet: pie del hero con Organiza / Acompaña, como el de la tapa del PDF. */}
-      <div className="border-t border-white/15 lg:hidden [@media(max-height:700px)]:hidden">
+      <div className="border-t border-white/15 lg:hidden [@media(max-height:949px)]:hidden">
         <div
           className={`${contentPadding} grid grid-cols-2 gap-4 py-[clamp(0.75rem,2.2svh,1.25rem)] sm:flex sm:flex-wrap sm:items-center sm:gap-x-[clamp(2rem,5vw,4rem)] sm:gap-y-3`}
         >

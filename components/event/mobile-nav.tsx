@@ -15,7 +15,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { event } from "@/content/event";
-import { navItems } from "@/content/navigation";
+import { ctaLabels, navItems } from "@/content/navigation";
 
 /**
  * Menú móvil a pantalla completa (como copat3D), sobre el Sheet de Radix:
@@ -122,7 +122,7 @@ export function MobileNav() {
 
           <Button asChild variant="accent" size="cta" className="mt-9 w-full focus-visible:ring-white">
             <a href="#inscripcion" onClick={(e) => navigate(e, "#inscripcion")}>
-              Inscribirme
+              {ctaLabels.primary}
             </a>
           </Button>
 

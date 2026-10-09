@@ -22,3 +22,13 @@ export const mainActions = [
     description: "Instituciones que organizan y acompañan el encuentro.",
   },
 ] as const;
+
+/* Textos de los botones (pedido de la organización). Cambiarlos acá cambia todo el sitio. */
+export const ctaLabels = {
+  /** Botón naranja principal (hero, header, menú): lleva al formulario. */
+  primary: "Quiero más info",
+  /** Versión corta para el header en celular, donde no entra el texto completo. */
+  primaryShort: "Más info",
+  /** Botón que envía el formulario. */
+  submit: "Registrarme",
+} as const;

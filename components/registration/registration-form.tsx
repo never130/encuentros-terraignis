@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
+import { ctaLabels } from "@/content/navigation";
 import { consentText, registrationMessages, sectors } from "@/content/registration";
 import type { CountryOption } from "@/lib/countries";
 import { suggestEmail } from "@/lib/text/email-suggestion";
@@ -288,7 +289,7 @@ export function RegistrationForm({ countries }: { countries: CountryOption[] }) 
       </div>
 
       <Button type="submit" variant="accent" size="cta" className="w-full" disabled={isPending} aria-disabled={isPending}>
-        {isPending ? registrationMessages.pending : "Confirmar inscripción"}
+        {isPending ? registrationMessages.pending : ctaLabels.submit}
       </Button>
 
       <p

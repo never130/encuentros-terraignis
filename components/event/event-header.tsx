@@ -1,7 +1,7 @@
 import { TerraIgnisLogo } from "@/components/brand/terra-ignis-logo";
 import { MobileNav } from "@/components/event/mobile-nav";
 import { Button } from "@/components/ui/button";
-import { navItems } from "@/content/navigation";
+import { ctaLabels, navItems } from "@/content/navigation";
 
 /* Fondo = tono superior del degradé oficial, para continuar sin corte en el hero. */
 export function EventHeader() {
@@ -36,9 +36,12 @@ export function EventHeader() {
             asChild
             variant="accent"
             size="cta"
-            className="hidden h-11 px-5 sm:inline-flex lg:h-12 lg:px-6"
+            className="h-10 px-3 sm:h-11 sm:px-5 lg:h-12 lg:px-6"
           >
-            <a href="#inscripcion">Inscribirme</a>
+            <a href="#inscripcion">
+              <span className="sm:hidden">{ctaLabels.primaryShort}</span>
+              <span className="hidden sm:inline">{ctaLabels.primary}</span>
+            </a>
           </Button>
           <MobileNav />
         </div>
