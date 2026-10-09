@@ -26,9 +26,7 @@ export const mainActions = [
 /* Textos de los botones (pedido de la organización). Cambiarlos acá cambia todo el sitio. */
 export const ctaLabels = {
   /** Botón naranja principal (hero, header, menú): lleva al formulario. */
-  primary: "Quiero más info",
-  /** Versión corta para el header en celular, donde no entra el texto completo. */
-  primaryShort: "Más info",
+  primary: "Inscribirme",
   /** Botón que envía el formulario. */
-  submit: "Registrarme",
+  submit: "Confirmar inscripción",
 } as const;

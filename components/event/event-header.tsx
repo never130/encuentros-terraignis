@@ -38,10 +38,7 @@ export function EventHeader() {
             size="cta"
             className="h-10 px-3 sm:h-11 sm:px-5 lg:h-12 lg:px-6"
           >
-            <a href="#inscripcion">
-              <span className="sm:hidden">{ctaLabels.primaryShort}</span>
-              <span className="hidden sm:inline">{ctaLabels.primary}</span>
-            </a>
+            <a href="#inscripcion">{ctaLabels.primary}</a>
           </Button>
           <MobileNav />
         </div>
