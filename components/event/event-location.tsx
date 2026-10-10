@@ -1,6 +1,5 @@
-import { CalendarDaysIcon, ExternalLinkIcon, MapPinIcon } from "lucide-react";
+import { CalendarDaysIcon, ExternalLinkIcon } from "lucide-react";
 
-import { StripeColumn } from "@/components/brand/stripes";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { Button } from "@/components/ui/button";
 import { event } from "@/content/event";
@@ -41,29 +40,26 @@ export function EventLocation() {
           </Button>
         </div>
 
-        <LocationPanel city={location.city} region={`${location.province} · ${location.country}`} />
+        <LocationMap src={location.mapEmbedUrl} title={`Mapa: ${location.name}, ${location.address}, ${location.city}`} />
       </div>
     </section>
   );
 }
 
-function LocationPanel({ city, region }: { city: string; region: string }) {
+/* Mapa de Google enmarcado como las cajas del PDF: filete y cuadrado naranja en la esquina.
+   loading="lazy": el mapa (pesado) se carga recién al llegar a la sección. */
+function LocationMap({ src, title }: { src: string; title: string }) {
   return (
-    <div
-      aria-hidden="true"
-      className="relative isolate aspect-[4/3] overflow-hidden terra-gradient text-white"
-    >
-      <StripeColumn className="absolute inset-y-0 left-0 -z-10 h-full w-10 sm:w-14" />
-      <MapPinIcon
-        strokeWidth={1.75}
-        className="absolute top-8 right-8 size-12 text-terra-orange sm:top-10 sm:right-10"
+    <div className="relative border-2 border-terra-petrol">
+      <span aria-hidden="true" className="absolute -top-[11px] -left-[11px] z-10 size-4 bg-terra-orange" />
+      <iframe
+        src={src}
+        title={title}
+        loading="lazy"
+        referrerPolicy="no-referrer-when-downgrade"
+        allowFullScreen
+        className="block aspect-square w-full border-0 sm:aspect-[4/3]"
       />
-      <div className="absolute bottom-0 left-0 py-8 pr-8 pl-16 sm:py-10 sm:pl-24">
-        <p className="text-sm font-extralight tracking-wide uppercase sm:text-lg">{region}</p>
-        <p className="mt-1 text-5xl leading-none font-black tracking-tight uppercase sm:text-6xl">
-          {city}
-        </p>
-      </div>
     </div>
   );
 }

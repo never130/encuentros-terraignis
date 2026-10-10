@@ -56,6 +56,9 @@ export const event = {
     country: "Argentina",
     mapsUrl:
       "https://www.google.com/maps/search/?api=1&query=F%C3%A1brica%20de%20Talentos%2C%20Av.%20Maip%C3%BA%201255%2C%20Ushuaia%2C%20Tierra%20del%20Fuego",
+    /** Embed público de Google Maps (sin clave de API). */
+    mapEmbedUrl:
+      "https://www.google.com/maps?q=F%C3%A1brica%20de%20Talentos%2C%20Av.%20Maip%C3%BA%201255%2C%20Ushuaia%2C%20Tierra%20del%20Fuego%2C%20Argentina&z=16&hl=es&output=embed",
   },
   organizer: "Terra Ignis Energía S.A.",
   partnerGroups: [
