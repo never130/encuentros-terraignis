@@ -14,6 +14,9 @@ export type SectorValue = (typeof sectors)[number]["value"];
 export const consentText =
   "Autorizo el uso de los datos consignados en este formulario para la organización y las comunicaciones vinculadas al Encuentro.";
 
+/** Pedido de la organización: visible junto a los botones de inscripción y después de inscribirse. */
+export const registrationNotice = "Actividad gratuita, con inscripción previa y cupos limitados.";
+
 export const successPath = "/inscripcion/exito";
 
 /** Versión del texto de consentimiento que se guarda con cada inscripción. Cambiarla si cambia el texto. */

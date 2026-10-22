@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select";
 import { ctaLabels } from "@/content/navigation";
-import { consentText, registrationMessages, sectors } from "@/content/registration";
+import { consentText, registrationMessages, registrationNotice, sectors } from "@/content/registration";
 import type { CountryOption } from "@/lib/countries";
 import { suggestEmail } from "@/lib/text/email-suggestion";
 import { registerAction, type RegistrationState } from "@/lib/registrations/actions";
@@ -291,6 +291,7 @@ export function RegistrationForm({ countries }: { countries: CountryOption[] }) 
       <Button type="submit" variant="accent" size="cta" className="w-full" disabled={isPending} aria-disabled={isPending}>
         {isPending ? registrationMessages.pending : ctaLabels.submit}
       </Button>
+      <p className="-mt-3 text-center text-[0.9375rem] font-bold text-terra-ink">{registrationNotice}</p>
 
       <p
         ref={statusRef}

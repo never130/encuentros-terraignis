@@ -6,6 +6,7 @@ import { PartnerLogo } from "@/components/partners/partner-logo";
 import { Button } from "@/components/ui/button";
 import { event } from "@/content/event";
 import { ctaLabels } from "@/content/navigation";
+import { registrationNotice } from "@/content/registration";
 
 /*
  * Traducción web de la tapa del programa oficial.
@@ -113,6 +114,9 @@ export function EventHero() {
               <a href="#programa">Ver programa</a>
             </Button>
           </div>
+          <p className="mt-3 text-sm font-bold text-terra-orange sm:text-[clamp(0.9375rem,2svh,1.0625rem)]">
+            {registrationNotice}
+          </p>
         </div>
 
         {/* Desktop: logos a la derecha, apoyados a la altura de los botones. El filete vertical

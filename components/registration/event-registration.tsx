@@ -4,6 +4,7 @@ import { StripeBand } from "@/components/brand/stripes";
 import { SectionHeading } from "@/components/layout/section-heading";
 import { RegistrationForm } from "@/components/registration/registration-form";
 import { event } from "@/content/event";
+import { registrationNotice } from "@/content/registration";
 import { getCountryOptions } from "@/lib/countries";
 
 export function EventRegistration() {
@@ -22,7 +23,12 @@ export function EventRegistration() {
             eyebrow="Inscripción"
             title="Confirmá tu participación"
             titleId="registration-title"
-            description={<p>Completá el formulario para registrarte en el Encuentro.</p>}
+            description={
+              <>
+                <p>Completá el formulario para registrarte en el Encuentro.</p>
+                <p className="mt-3 font-bold text-terra-orange">{registrationNotice}</p>
+              </>
+            }
           />
           <ul className="mt-10 space-y-6">
             <li className="flex items-center gap-4">

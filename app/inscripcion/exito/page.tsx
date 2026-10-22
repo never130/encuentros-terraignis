@@ -7,6 +7,7 @@ import { StripeColumn } from "@/components/brand/stripes";
 import { TerraIgnisLogo } from "@/components/brand/terra-ignis-logo";
 import { Button } from "@/components/ui/button";
 import { event } from "@/content/event";
+import { registrationNotice } from "@/content/registration";
 
 export const metadata: Metadata = {
   title: "Inscripción confirmada | Repensar las Cuencas Maduras",
@@ -37,6 +38,9 @@ export default function RegistrationSuccessPage() {
             Su inscripción al Encuentro{" "}
             <strong className="font-extrabold">{event.name}</strong> ha sido registrada
             correctamente.
+          </p>
+          <p className="mt-4 max-w-2xl text-lg font-bold text-terra-orange sm:text-xl">
+            {registrationNotice}
           </p>
 
           <ul className="mt-10 space-y-6">

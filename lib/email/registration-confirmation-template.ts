@@ -1,4 +1,5 @@
 import { event } from "@/content/event";
+import { registrationNotice } from "@/content/registration";
 import { siteUrl } from "@/lib/site";
 
 export const confirmationSubject = `Inscripción confirmada | ${event.name}`;
@@ -22,6 +23,7 @@ export function confirmationText(fullName: string): string {
     `Hola, ${fullName}:`,
     "",
     `Tu inscripción al Encuentro ${event.name} fue registrada correctamente.`,
+    registrationNotice,
     "",
     event.dateLabel,
     "",
@@ -67,6 +69,7 @@ export function confirmationHtml(fullName: string): string {
       <p style="margin:0 0 6px 0;font-size:13px;font-weight:700;letter-spacing:2px;color:#0d5257;text-transform:uppercase;">Inscripción confirmada</p>
       <p style="margin:0 0 16px 0;font-size:18px;line-height:1.5;">Hola, ${name}:</p>
       <p style="margin:0 0 24px 0;font-size:16px;line-height:1.6;">Tu inscripción al Encuentro <strong>${event.name}</strong> fue registrada correctamente.</p>
+      <p style="margin:-12px 0 24px 0;font-size:16px;line-height:1.6;font-weight:700;color:#0d5257;">${registrationNotice}</p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:2px solid #606060;border-bottom:2px solid #606060;">
         <tr><td style="padding:16px 0 8px 0;font-family:${font};font-size:20px;font-weight:800;color:#0d5257;">${event.dateLabel}</td></tr>
         <tr><td style="padding:0 0 16px 0;font-family:${font};font-size:16px;line-height:1.5;color:#0d2532;"><strong>${location.name}</strong><br>${location.address}<br>${location.city}, ${location.province}</td></tr>

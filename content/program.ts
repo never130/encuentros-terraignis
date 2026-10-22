@@ -56,8 +56,7 @@ export const program: ProgramDay[] = [
       {
         kind: "panel",
         number: 2,
-        title:
-          "Cuencas maduras: cómo volver competitivos los hidrocarburos convencionales",
+        title: "Cuencas maduras: una mirada estratégica",
         participants: "CEOs y autoridades de empresas del sector energético.",
       },
       {
@@ -87,10 +86,7 @@ export const program: ProgramDay[] = [
       {
         kind: "panel",
         number: 6,
-        title:
-          "Cadena de valor energética: proveedores, servicios y desarrollo territorial",
-        participants:
-          "empresas proveedoras, cámaras empresariales y referentes vinculados al desarrollo de proveedores.",
+        title: "Potencial de desarrollo de cuencas maduras",
       },
       {
         kind: "moment",
